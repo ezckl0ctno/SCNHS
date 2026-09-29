@@ -1,0 +1,1034 @@
+import { i as __toESM } from "../_runtime.mjs";
+import { C as require_jsx_runtime, X as require_react, b as Link, p as useRouterState } from "../_libs/@tanstack/react-router+[...].mjs";
+import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
+import { i as string, r as object } from "../_libs/zod.mjs";
+import { a as House, c as Bell, i as Landmark, o as GraduationCap, s as DoorOpen } from "../_libs/lucide-react.mjs";
+import { n as clsx, t as cva } from "../_libs/class-variance-authority+clsx.mjs";
+import { t as twMerge } from "../_libs/tailwind-merge.mjs";
+import { n as create, t as persist } from "../_libs/zustand.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/app-shell-bktvxgIj.js
+var import_react = /* @__PURE__ */ __toESM(require_react());
+var import_jsx_runtime = require_jsx_runtime();
+function cn(...inputs) {
+	return twMerge(clsx(inputs));
+}
+function subscribe() {
+	return () => {};
+}
+function ClientReady({ children }) {
+	if (!(0, import_react.useSyncExternalStore)(subscribe, () => true, () => false)) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "rounded-2xl bg-paper px-5 py-8 text-muted shadow-border",
+		children: "Opening the gate desk…"
+	});
+	return children;
+}
+var buttonVariants = cva("inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50 min-h-11 px-4", {
+	variants: { variant: {
+		primary: "bg-primary text-primary-fg hover:bg-primary-dark",
+		ink: "bg-ink text-paper hover:bg-ink/90",
+		ghost: "bg-transparent text-ink hover:bg-leaf/40",
+		outline: "bg-paper text-ink shadow-border hover:shadow-border-hover",
+		gold: "bg-gold text-ink hover:bg-gold-dark hover:text-paper",
+		danger: "bg-rose-soft text-rose hover:bg-rose-soft/80"
+	} },
+	defaultVariants: { variant: "primary" }
+});
+var Button = (0, import_react.forwardRef)(({ className, variant, type = "button", ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+	ref,
+	type,
+	className: cn(buttonVariants({ variant }), className),
+	...props
+}));
+Button.displayName = "Button";
+async function hashSecret(secret) {
+	const data = new TextEncoder().encode(secret);
+	const buf = await crypto.subtle.digest("SHA-256", data);
+	return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+var loading = null;
+function loadFaceEngine() {
+	if (typeof window === "undefined") return Promise.reject(/* @__PURE__ */ new Error("No camera here."));
+	if (window.faceapi?.nets) return loading ?? (loading = loadModels());
+	if (loading) return loading;
+	loading = new Promise((resolve, reject) => {
+		const existing = document.querySelector("script[data-face-api=\"1\"]");
+		if (existing) {
+			existing.addEventListener("load", () => resolve());
+			existing.addEventListener("error", () => reject(/* @__PURE__ */ new Error("Face engine failed to load.")));
+			return;
+		}
+		const script = document.createElement("script");
+		script.src = "/vendor/face-api.min.js";
+		script.async = true;
+		script.dataset.faceApi = "1";
+		script.onload = () => resolve();
+		script.onerror = () => reject(/* @__PURE__ */ new Error("Face engine failed to load."));
+		document.head.appendChild(script);
+	}).then(loadModels);
+	return loading;
+}
+async function loadModels() {
+	const api = window.faceapi;
+	if (!api) throw new Error("Face engine missing.");
+	const url = "/models";
+	await Promise.all([
+		api.nets.tinyFaceDetector.loadFromUri(url),
+		api.nets.faceLandmark68Net.loadFromUri(url),
+		api.nets.faceRecognitionNet.loadFromUri(url)
+	]);
+}
+async function descriptorFromVideo(video) {
+	await loadFaceEngine();
+	const api = window.faceapi;
+	if (!api) return null;
+	const det = await api.detectSingleFace(video, new api.TinyFaceDetectorOptions({
+		inputSize: 224,
+		scoreThreshold: .5
+	})).withFaceLandmarks().withFaceDescriptor();
+	if (!det) return null;
+	return Array.from(det.descriptor);
+}
+function distance(a, b) {
+	if (a.length !== b.length) return 999;
+	let sum = 0;
+	for (let i = 0; i < a.length; i++) {
+		const d = a[i] - b[i];
+		sum += d * d;
+	}
+	return Math.sqrt(sum);
+}
+function matchFace(students, descriptor, threshold = .5) {
+	let best = null;
+	let bestDist = threshold;
+	for (const student of students) for (const stored of student.descriptors) {
+		const dist = distance(stored, descriptor);
+		if (dist < bestDist) {
+			bestDist = dist;
+			best = student;
+		}
+	}
+	return best ? {
+		student: best,
+		distance: bestDist
+	} : null;
+}
+var createSsrRpc = (functionId) => {
+	const url = "/_serverFn/" + functionId;
+	const serverFnMeta = { id: functionId };
+	const fn = async (...args) => {
+		return (await getServerFnById(functionId, { origin: "server" }))(...args);
+	};
+	return Object.assign(fn, {
+		url,
+		serverFnMeta,
+		[TSS_SERVER_FUNCTION]: true
+	});
+};
+var Input = object({
+	fromName: string(),
+	emailHost: string(),
+	emailUser: string(),
+	emailPass: string(),
+	toEmail: string(),
+	subject: string(),
+	text: string(),
+	smsKey: string(),
+	smsSender: string(),
+	toPhone: string()
+});
+var dispatchNotice = createServerFn({ method: "POST" }).validator((input) => Input.parse(input)).handler(createSsrRpc("a3023c896c3aa5153cee240050c270493fbb3d851073861eae92f7d0ef849630"));
+function sectionKey(grade, name) {
+	return `${grade.trim().toLowerCase()}::${name.trim().toLowerCase()}`;
+}
+function sectionLabel(section) {
+	return `Grade ${section.grade} — ${section.name}`;
+}
+function findSection(sections, grade, name) {
+	const key = sectionKey(grade, name);
+	return sections.find((s) => sectionKey(s.grade, s.name) === key) ?? null;
+}
+function studentsInSection(students, sectionId) {
+	return students.filter((s) => s.sectionId === sectionId);
+}
+var DEFAULT_SECTION_PLAN = [
+	{
+		grade: "7",
+		name: "Rizal"
+	},
+	{
+		grade: "7",
+		name: "Bonifacio"
+	},
+	{
+		grade: "7",
+		name: "Mabini"
+	},
+	{
+		grade: "7",
+		name: "Luna"
+	},
+	{
+		grade: "8",
+		name: "Rizal"
+	},
+	{
+		grade: "8",
+		name: "Bonifacio"
+	},
+	{
+		grade: "8",
+		name: "Mabini"
+	},
+	{
+		grade: "8",
+		name: "Luna"
+	},
+	{
+		grade: "9",
+		name: "Rizal"
+	},
+	{
+		grade: "9",
+		name: "Bonifacio"
+	},
+	{
+		grade: "9",
+		name: "Mabini"
+	},
+	{
+		grade: "9",
+		name: "Luna"
+	},
+	{
+		grade: "10",
+		name: "Rizal"
+	},
+	{
+		grade: "10",
+		name: "Bonifacio"
+	},
+	{
+		grade: "10",
+		name: "Mabini"
+	},
+	{
+		grade: "10",
+		name: "Luna"
+	},
+	{
+		grade: "11",
+		name: "STEM"
+	},
+	{
+		grade: "11",
+		name: "ABM"
+	},
+	{
+		grade: "11",
+		name: "HUMSS"
+	},
+	{
+		grade: "12",
+		name: "STEM"
+	},
+	{
+		grade: "12",
+		name: "ABM"
+	},
+	{
+		grade: "12",
+		name: "HUMSS"
+	}
+];
+function makeDefaultSections(uid) {
+	return DEFAULT_SECTION_PLAN.map((row) => ({
+		id: uid(),
+		grade: row.grade,
+		name: row.name,
+		adviser: ""
+	}));
+}
+function sortSections(sections) {
+	return [...sections].sort((a, b) => {
+		const ga = Number(a.grade);
+		const gb = Number(b.grade);
+		if (!Number.isNaN(ga) && !Number.isNaN(gb) && ga !== gb) return ga - gb;
+		if (a.grade !== b.grade) return a.grade.localeCompare(b.grade);
+		return a.name.localeCompare(b.name);
+	});
+}
+var emptyNotify = () => ({
+	emailUser: "",
+	emailPass: "",
+	emailHost: "smtp.gmail.com",
+	smsKey: "",
+	smsSender: "SCNGATE"
+});
+function seedUid() {
+	if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+	return `sec-${Math.random().toString(36).slice(2, 10)}`;
+}
+function seedState() {
+	return {
+		school: {
+			name: "Sta Catalina National High School",
+			campus: "Sta. Catalina",
+			arrivalStart: "07:30",
+			arrivalEnd: "08:10",
+			absentCutoff: "08:30",
+			dismissStart: "16:00",
+			notify: emptyNotify()
+		},
+		officePasswordHash: null,
+		sections: makeDefaultSections(seedUid),
+		parents: [],
+		students: [],
+		attendance: [],
+		alerts: [],
+		session: { role: "none" }
+	};
+}
+function pad(n) {
+	return String(n).padStart(2, "0");
+}
+function todayISO(date = /* @__PURE__ */ new Date()) {
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+function minutes(hhmm) {
+	const [h, m] = hhmm.split(":").map(Number);
+	return h * 60 + m;
+}
+function classifyIn(school, date = /* @__PURE__ */ new Date()) {
+	if (date.getHours() * 60 + date.getMinutes() <= minutes(school.arrivalEnd)) return "on_time";
+	return "late";
+}
+function classifyOut(school, date = /* @__PURE__ */ new Date()) {
+	if (date.getHours() * 60 + date.getMinutes() < minutes(school.dismissStart)) return "early_exit";
+	return "dismissed";
+}
+var STATUS_LABEL = {
+	on_time: "Arrived on time",
+	late: "Arrived late",
+	early_exit: "Left early",
+	dismissed: "Dismissed",
+	absent: "No arrival"
+};
+function parentMessage(school, studentName, status, when) {
+	const time = when.toLocaleTimeString([], {
+		hour: "2-digit",
+		minute: "2-digit"
+	});
+	const date = when.toLocaleDateString();
+	switch (status) {
+		case "on_time": return `${studentName} checked in at the school gate at ${time} on ${date}.`;
+		case "late": return `${studentName} checked in late at the school gate at ${time} on ${date}.`;
+		case "early_exit": return `${studentName} checked out before dismissal at ${time} on ${date}. Please confirm with the office if this was expected.`;
+		case "dismissed": return `${studentName} checked out at ${time} on ${date}.`;
+		case "absent": return `${studentName} had no gate check-in by ${school.absentCutoff} on ${date}. Please contact the school office.`;
+	}
+}
+function uid() {
+	return crypto.randomUUID();
+}
+function nextStudentNumber(students) {
+	const nums = students.map((s) => Number(s.code.replace(/\D/g, ""))).filter((n) => !Number.isNaN(n));
+	return (nums.length ? Math.max(...nums) : 1e3) + 1;
+}
+function blankAlert() {
+	return {
+		emailStatus: "idle",
+		smsStatus: "idle",
+		emailDetail: "",
+		smsDetail: ""
+	};
+}
+function hydrateStudent(raw, sections) {
+	const grade = String(raw.grade ?? "").trim() || "10";
+	const sectionName = String(raw.section ?? "").trim() || "Rizal";
+	const matched = raw.sectionId && sections.find((s) => s.id === raw.sectionId) || findSection(sections, grade, sectionName);
+	return {
+		id: raw.id || uid(),
+		name: raw.name || "",
+		grade: matched?.grade ?? grade,
+		section: matched?.name ?? sectionName,
+		sectionId: matched?.id ?? "",
+		code: raw.code || "",
+		pin: raw.pin || "",
+		parentId: raw.parentId ?? null,
+		descriptors: Array.isArray(raw.descriptors) ? raw.descriptors : []
+	};
+}
+function hydrateSections(saved, students) {
+	const map = /* @__PURE__ */ new Map();
+	for (const s of saved ?? []) {
+		if (!s?.grade || !s?.name) continue;
+		map.set(sectionKey(s.grade, s.name), {
+			id: s.id || uid(),
+			grade: String(s.grade).trim(),
+			name: String(s.name).trim(),
+			adviser: s.adviser ?? ""
+		});
+	}
+	for (const student of students) {
+		const grade = String(student.grade ?? "").trim();
+		const name = String(student.section ?? "").trim();
+		if (!grade || !name) continue;
+		const key = sectionKey(grade, name);
+		if (!map.has(key)) map.set(key, {
+			id: uid(),
+			grade,
+			name,
+			adviser: ""
+		});
+	}
+	const base = seedState().sections;
+	if (map.size === 0) return base;
+	for (const s of base) {
+		const key = sectionKey(s.grade, s.name);
+		if (!map.has(key)) map.set(key, s);
+	}
+	return sortSections([...map.values()]);
+}
+function recordEvent(state, student, direction, status, method, when) {
+	const event = {
+		id: uid(),
+		studentId: student.id,
+		date: todayISO(when),
+		direction,
+		status,
+		method,
+		createdAt: when.toISOString()
+	};
+	const alerts = [...state.alerts];
+	let alert = null;
+	if (student.parentId) {
+		alert = {
+			id: uid(),
+			studentId: student.id,
+			parentId: student.parentId,
+			status,
+			text: parentMessage(state.school, student.name, status, when),
+			createdAt: when.toISOString(),
+			...blankAlert()
+		};
+		alerts.unshift(alert);
+	}
+	return {
+		event,
+		alert,
+		attendance: [event, ...state.attendance],
+		alerts
+	};
+}
+var useSchool = create()(persist((set, get) => ({
+	...seedState(),
+	setupOffice: async (password) => {
+		if (password.trim().length < 6) return {
+			ok: false,
+			error: "Use at least 6 characters for the office password."
+		};
+		if (get().officePasswordHash) return {
+			ok: false,
+			error: "Office password is already set. Sign in instead."
+		};
+		set({
+			officePasswordHash: await hashSecret(password.trim()),
+			session: { role: "office" }
+		});
+		return { ok: true };
+	},
+	signInOffice: async (password) => {
+		const hash = get().officePasswordHash;
+		if (!hash) return {
+			ok: false,
+			error: "Create the office password first."
+		};
+		if (await hashSecret(password.trim()) !== hash) return {
+			ok: false,
+			error: "That office password is not correct."
+		};
+		set({ session: { role: "office" } });
+		return { ok: true };
+	},
+	signInParent: async (email, password) => {
+		const parent = get().parents.find((p) => p.email.toLowerCase() === email.trim().toLowerCase());
+		if (!parent || !parent.email) return {
+			ok: false,
+			error: "No parent account uses that email."
+		};
+		if (await hashSecret(password) !== parent.passwordHash) return {
+			ok: false,
+			error: "Email or password is not correct."
+		};
+		set({ session: {
+			role: "parent",
+			parentId: parent.id
+		} });
+		return { ok: true };
+	},
+	signInStudent: async (sectionId, code, pin) => {
+		const state = get();
+		const section = state.sections.find((s) => s.id === sectionId);
+		if (!section) return {
+			ok: false,
+			error: "Choose your section first."
+		};
+		const needle = code.trim().toUpperCase();
+		const pinTrim = pin.trim();
+		const byCode = state.students.find((s) => s.code.toUpperCase() === needle);
+		if (!byCode) return {
+			ok: false,
+			error: "Student code or PIN did not match."
+		};
+		if (byCode.pin !== pinTrim) return {
+			ok: false,
+			error: "Student code or PIN did not match."
+		};
+		if (byCode.sectionId !== section.id) return {
+			ok: false,
+			error: `${byCode.name} is enrolled in Grade ${byCode.grade} — ${byCode.section}. Choose that section to sign in.`
+		};
+		set({ session: {
+			role: "student",
+			studentId: byCode.id
+		} });
+		return { ok: true };
+	},
+	signOut: () => set({ session: { role: "none" } }),
+	updateHours: (hours) => {
+		set({ school: {
+			...get().school,
+			...hours
+		} });
+	},
+	updateNotify: (notify) => {
+		set({ school: {
+			...get().school,
+			notify: {
+				...get().school.notify,
+				...notify
+			}
+		} });
+	},
+	addSection: ({ grade, name, adviser }) => {
+		const g = grade.trim();
+		const n = name.trim();
+		if (!g || !n) return { error: "Grade and section name are required." };
+		const state = get();
+		if (findSection(state.sections, g, n)) return { error: `Grade ${g} — ${n} already exists.` };
+		const section = {
+			id: uid(),
+			grade: g,
+			name: n,
+			adviser: adviser.trim()
+		};
+		set({ sections: sortSections([...state.sections, section]) });
+		return section;
+	},
+	updateSection: (id, patch) => {
+		const state = get();
+		const current = state.sections.find((s) => s.id === id);
+		if (!current) return { error: "Section not found." };
+		const next = {
+			...current,
+			grade: (patch.grade ?? current.grade).trim(),
+			name: (patch.name ?? current.name).trim(),
+			adviser: (patch.adviser ?? current.adviser).trim()
+		};
+		if (!next.grade || !next.name) return { error: "Grade and section name are required." };
+		const clash = findSection(state.sections, next.grade, next.name);
+		if (clash && clash.id !== id) return { error: `Grade ${next.grade} — ${next.name} already exists.` };
+		set({
+			sections: sortSections(state.sections.map((s) => s.id === id ? next : s)),
+			students: state.students.map((s) => s.sectionId === id ? {
+				...s,
+				grade: next.grade,
+				section: next.name
+			} : s)
+		});
+		return { ok: true };
+	},
+	removeSection: (id) => {
+		const enrolled = get().students.filter((s) => s.sectionId === id).length;
+		if (enrolled) return { error: `Move or remove ${enrolled} student${enrolled === 1 ? "" : "s"} first.` };
+		set({ sections: get().sections.filter((s) => s.id !== id) });
+		return { ok: true };
+	},
+	checkPin: (sectionId, code, pin, direction) => {
+		const state = get();
+		const section = state.sections.find((s) => s.id === sectionId);
+		if (!section) return {
+			ok: false,
+			error: "Choose the student’s section first."
+		};
+		const student = state.students.find((s) => s.code.toUpperCase() === code.trim().toUpperCase() && s.pin === pin.trim());
+		if (!student) return {
+			ok: false,
+			error: "Student code or PIN did not match."
+		};
+		if (student.sectionId !== section.id) return {
+			ok: false,
+			error: `${student.name} belongs to Grade ${student.grade} — ${student.section}. Open that section at the gate.`
+		};
+		const when = /* @__PURE__ */ new Date();
+		const recorded = recordEvent(state, student, direction, direction === "in" ? classifyIn(state.school, when) : classifyOut(state.school, when), "pin", when);
+		set({
+			attendance: recorded.attendance,
+			alerts: recorded.alerts
+		});
+		if (recorded.alert) get().pushNotice(recorded.alert.id);
+		return {
+			ok: true,
+			student,
+			event: recorded.event
+		};
+	},
+	checkFace: (sectionId, descriptor, direction) => {
+		const state = get();
+		const section = state.sections.find((s) => s.id === sectionId);
+		if (!section) return {
+			ok: false,
+			error: "Choose the student’s section first."
+		};
+		const hit = matchFace(state.students.filter((s) => s.sectionId === section.id), descriptor);
+		if (!hit) return {
+			ok: false,
+			error: `No matching enrolled face in Grade ${section.grade} — ${section.name}. Try PIN, or pick the correct section.`
+		};
+		const when = /* @__PURE__ */ new Date();
+		const status = direction === "in" ? classifyIn(state.school, when) : classifyOut(state.school, when);
+		const recorded = recordEvent(state, hit.student, direction, status, "face", when);
+		set({
+			attendance: recorded.attendance,
+			alerts: recorded.alerts
+		});
+		if (recorded.alert) get().pushNotice(recorded.alert.id);
+		return {
+			ok: true,
+			student: hit.student,
+			event: recorded.event
+		};
+	},
+	markAbsences: async (sectionId) => {
+		const state = get();
+		const day = todayISO();
+		const when = /* @__PURE__ */ new Date();
+		let next = state;
+		const queued = [];
+		let created = 0;
+		const pool = sectionId ? state.students.filter((s) => s.sectionId === sectionId) : state.students;
+		for (const student of pool) {
+			const hasIn = next.attendance.some((a) => a.studentId === student.id && a.date === day && a.direction === "in");
+			const already = next.attendance.some((a) => a.studentId === student.id && a.date === day && a.status === "absent");
+			if (hasIn || already) continue;
+			const recorded = recordEvent(next, student, "none", "absent", "sweep", when);
+			next = {
+				...next,
+				attendance: recorded.attendance,
+				alerts: recorded.alerts
+			};
+			if (recorded.alert) queued.push(recorded.alert.id);
+			created += 1;
+		}
+		set({
+			attendance: next.attendance,
+			alerts: next.alerts
+		});
+		for (const id of queued) await get().pushNotice(id);
+		return created;
+	},
+	addStudent: ({ name, sectionId, pin, parentId }) => {
+		const state = get();
+		if (!name.trim()) return { error: "Student name is required." };
+		const section = state.sections.find((s) => s.id === sectionId);
+		if (!section) return { error: "Choose a section for this student." };
+		const n = nextStudentNumber(state.students);
+		const code = `STU-${n}`;
+		const student = {
+			id: uid(),
+			name: name.trim(),
+			grade: section.grade,
+			section: section.name,
+			sectionId: section.id,
+			code,
+			pin: pin.trim() || String(n),
+			parentId: parentId || null,
+			descriptors: []
+		};
+		set({ students: [...state.students, student] });
+		return student;
+	},
+	removeStudent: (id) => {
+		const session = get().session;
+		set({
+			students: get().students.filter((s) => s.id !== id),
+			session: session.role === "student" && session.studentId === id ? { role: "none" } : session
+		});
+	},
+	moveStudent: (studentId, sectionId) => {
+		const section = get().sections.find((s) => s.id === sectionId);
+		if (!section) return { error: "That section does not exist." };
+		set({ students: get().students.map((s) => s.id === studentId ? {
+			...s,
+			sectionId: section.id,
+			grade: section.grade,
+			section: section.name
+		} : s) });
+		return { ok: true };
+	},
+	linkParent: (studentId, parentId) => {
+		set({ students: get().students.map((s) => s.id === studentId ? {
+			...s,
+			parentId
+		} : s) });
+	},
+	addParent: async ({ name, email, phone, password }) => {
+		if (!name.trim()) return { error: "Parent name is required." };
+		if (!email.trim() && !phone.trim()) return { error: "Add an email or a mobile number." };
+		const pass = password.trim() || `scn${Math.floor(1e3 + Math.random() * 9e3)}`;
+		if (pass.length < 6) return { error: "Parent password needs at least 6 characters." };
+		const state = get();
+		const emailKey = email.trim().toLowerCase();
+		if (emailKey && state.parents.some((p) => p.email && p.email.toLowerCase() === emailKey)) return { error: "That email is already in use." };
+		const parent = {
+			id: uid(),
+			name: name.trim(),
+			email: emailKey,
+			phone: phone.trim(),
+			passwordHash: await hashSecret(pass)
+		};
+		set({ parents: [...state.parents, parent] });
+		return parent;
+	},
+	enrollFace: (studentId, descriptor) => {
+		const students = get().students.map((s) => {
+			if (s.id !== studentId) return s;
+			const descriptors = [...s.descriptors, descriptor].slice(-8);
+			return {
+				...s,
+				descriptors
+			};
+		});
+		const student = students.find((s) => s.id === studentId);
+		if (!student) return { error: "Student not found." };
+		set({ students });
+		return {
+			ok: true,
+			count: student.descriptors.length
+		};
+	},
+	importClass: async (rows) => {
+		if (rows.length === 0) return { error: "No students to import." };
+		let added = 0;
+		let parentsCreated = 0;
+		let sectionsCreated = 0;
+		for (const row of rows) {
+			if (!row.name.trim()) continue;
+			const grade = row.grade.trim() || "10";
+			const name = row.section.trim() || "Rizal";
+			let section = findSection(get().sections, grade, name);
+			if (!section) {
+				const created = get().addSection({
+					grade,
+					name,
+					adviser: ""
+				});
+				if ("error" in created) return created;
+				section = created;
+				sectionsCreated += 1;
+			}
+			let parentId = null;
+			if (row.parentName.trim() && (row.parentEmail.trim() || row.parentPhone.trim())) {
+				const emailKey = row.parentEmail.trim().toLowerCase();
+				const existing = get().parents.find((p) => emailKey && p.email === emailKey || row.parentPhone.trim() && p.phone === row.parentPhone.trim());
+				if (existing) parentId = existing.id;
+				else {
+					const created = await get().addParent({
+						name: row.parentName,
+						email: row.parentEmail,
+						phone: row.parentPhone,
+						password: row.parentPassword
+					});
+					if ("error" in created) return created;
+					parentId = created.id;
+					parentsCreated += 1;
+				}
+			}
+			const student = get().addStudent({
+				name: row.name,
+				sectionId: section.id,
+				pin: row.pin,
+				parentId
+			});
+			if ("error" in student) return student;
+			added += 1;
+		}
+		return {
+			added,
+			parents: parentsCreated,
+			sections: sectionsCreated
+		};
+	},
+	pushNotice: async (alertId) => {
+		const state = get();
+		const alert = state.alerts.find((a) => a.id === alertId);
+		if (!alert) return;
+		const parent = state.parents.find((p) => p.id === alert.parentId);
+		const notify = state.school.notify ?? emptyNotify();
+		const patch = (emailStatus, smsStatus, emailDetail, smsDetail) => {
+			set({ alerts: get().alerts.map((a) => a.id === alertId ? {
+				...a,
+				emailStatus,
+				smsStatus,
+				emailDetail,
+				smsDetail
+			} : a) });
+		};
+		if (!parent) {
+			patch("skipped", "skipped", "No parent linked.", "No parent linked.");
+			return;
+		}
+		patch("sending", "sending", "Sending…", "Sending…");
+		try {
+			const result = await dispatchNotice({ data: {
+				fromName: state.school.name,
+				emailHost: notify.emailHost,
+				emailUser: notify.emailUser,
+				emailPass: notify.emailPass,
+				toEmail: parent.email,
+				subject: `${state.school.name}: attendance`,
+				text: alert.text,
+				smsKey: notify.smsKey,
+				smsSender: notify.smsSender,
+				toPhone: parent.phone
+			} });
+			patch(result.email.status, result.sms.status, result.email.detail, result.sms.detail);
+		} catch (error) {
+			const msg = error instanceof Error ? error.message : "Send failed.";
+			patch("failed", "failed", msg, msg);
+		}
+	},
+	clearRecords: () => {
+		const hash = get().officePasswordHash;
+		const notify = get().school.notify;
+		set({
+			...seedState(),
+			officePasswordHash: hash,
+			session: { role: "office" },
+			school: {
+				...seedState().school,
+				notify
+			}
+		});
+	},
+	importBackup: (raw) => {
+		if (!raw || typeof raw !== "object") return { error: "That file is not a gate backup." };
+		const data = raw;
+		if (!data.school || !Array.isArray(data.students) || !Array.isArray(data.parents)) return { error: "That file is missing school, students, or parents." };
+		const base = seedState();
+		const sections = hydrateSections(data.sections, data.students);
+		set({
+			school: {
+				...base.school,
+				...data.school,
+				notify: {
+					...emptyNotify(),
+					...data.school.notify
+				}
+			},
+			officePasswordHash: data.officePasswordHash ?? get().officePasswordHash,
+			sections,
+			students: data.students.map((s) => hydrateStudent(s, sections)),
+			parents: data.parents.map((p) => ({
+				...p,
+				phone: p.phone ?? ""
+			})),
+			attendance: Array.isArray(data.attendance) ? data.attendance : [],
+			alerts: Array.isArray(data.alerts) ? data.alerts.map((a) => ({
+				...a,
+				emailStatus: a.emailStatus ?? "skipped",
+				smsStatus: a.smsStatus ?? "skipped",
+				emailDetail: a.emailDetail ?? "",
+				smsDetail: a.smsDetail ?? ""
+			})) : [],
+			session: { role: "office" }
+		});
+		return { ok: true };
+	}
+}), {
+	name: "scn-gate-v3",
+	partialize: (s) => ({
+		school: s.school,
+		officePasswordHash: s.officePasswordHash,
+		sections: s.sections,
+		students: s.students,
+		parents: s.parents,
+		attendance: s.attendance,
+		alerts: s.alerts,
+		session: s.session
+	}),
+	merge: (persisted, current) => {
+		const p = persisted;
+		if (!p) return current;
+		const sections = hydrateSections(p.sections, p.students ?? current.students);
+		return {
+			...current,
+			...p,
+			school: {
+				...current.school,
+				...p.school,
+				notify: {
+					...emptyNotify(),
+					...p.school?.notify
+				}
+			},
+			sections,
+			students: (p.students ?? current.students).map((s) => hydrateStudent(s, sections)),
+			parents: (p.parents ?? current.parents).map((parent) => ({
+				...parent,
+				phone: parent.phone ?? ""
+			})),
+			alerts: (p.alerts ?? current.alerts).map((a) => ({
+				...a,
+				emailStatus: a.emailStatus ?? "idle",
+				smsStatus: a.smsStatus ?? "idle",
+				emailDetail: a.emailDetail ?? "",
+				smsDetail: a.smsDetail ?? ""
+			}))
+		};
+	}
+}));
+var NAV = [
+	{
+		to: "/",
+		label: "Home",
+		icon: House
+	},
+	{
+		to: "/gate",
+		label: "Gate",
+		icon: DoorOpen
+	},
+	{
+		to: "/office",
+		label: "Office",
+		icon: Landmark
+	},
+	{
+		to: "/student",
+		label: "Student",
+		icon: GraduationCap
+	},
+	{
+		to: "/parent",
+		label: "Parents",
+		icon: Bell
+	}
+];
+function AppShell({ title, kicker, children }) {
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "min-h-svh bg-canvas text-ink",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
+				className: "border-b border-line bg-paper/90 backdrop-blur",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mx-auto flex max-w-5xl items-center gap-3 px-4 py-3",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+							to: "/",
+							className: "flex min-h-11 items-center gap-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+								src: "/scnhs-logo.png",
+								alt: "Sta. Catalina National High School seal",
+								className: "size-10 rounded-lg bg-white object-contain"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "leading-tight",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "block font-display text-sm font-semibold text-balance",
+									children: "Sta Catalina National High School"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "block text-xs text-muted",
+									children: "Facial Recognition System"
+								})]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+							className: "ml-auto hidden items-center gap-1 lg:flex",
+							children: NAV.map((item) => {
+								const active = pathname === item.to;
+								const Icon = item.icon;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+									to: item.to,
+									className: cn("inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm", active ? "bg-leaf text-primary-dark" : "text-muted hover:bg-leaf/50 hover:text-ink"),
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, {
+										className: "size-4",
+										strokeWidth: 1.75
+									}), item.label]
+								}, item.to);
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClientReady, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SessionChip, {}) })
+					]
+				})
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+				className: "mx-auto max-w-5xl px-4 py-6 pb-24 sm:pb-10",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-xs font-medium uppercase tracking-[0.16em] text-muted",
+						children: kicker
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "mt-1 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl",
+						children: title
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-6",
+						children
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+				className: "fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper lg:hidden",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "grid grid-cols-5",
+					children: NAV.map((item) => {
+						const active = pathname === item.to;
+						const Icon = item.icon;
+						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+							to: item.to,
+							className: cn("flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px]", active ? "text-primary" : "text-muted"),
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, {
+								className: "size-5",
+								strokeWidth: 1.75
+							}), item.label]
+						}, item.to);
+					})
+				})
+			})
+		]
+	});
+}
+function SessionChip() {
+	const session = useSchool((s) => s.session);
+	const parents = useSchool((s) => s.parents);
+	const students = useSchool((s) => s.students);
+	const signOut = useSchool((s) => s.signOut);
+	if (session.role === "none") return null;
+	const label = session.role === "office" ? "Office" : session.role === "parent" ? parents.find((p) => p.id === session.parentId)?.name ?? "Parent" : students.find((s) => s.id === session.studentId)?.name ?? "Student";
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+		className: "flex items-center gap-2",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "hidden max-w-32 truncate text-xs text-muted sm:inline",
+			children: label
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+			variant: "ghost",
+			className: "min-h-9 px-3 text-xs",
+			onClick: signOut,
+			children: "Sign out"
+		})]
+	});
+}
+//#endregion
+export { cn as a, sectionLabel as c, todayISO as d, useSchool as f, STATUS_LABEL as i, sortSections as l, Button as n, descriptorFromVideo as o, ClientReady as r, loadFaceEngine as s, AppShell as t, studentsInSection as u };

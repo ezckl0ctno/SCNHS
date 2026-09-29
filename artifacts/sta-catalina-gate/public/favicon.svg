@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Sta Catalina Gate">
+  <path fill="#1B5E46" d="M16 1.4 28.6 7.2v10c0 8.5-6.3 14.1-12.6 16C9.7 31.3 3.4 25.7 3.4 17.2v-10Z"/>
+  <path fill="none" stroke="#B8860B" stroke-width="1.7" d="M16 3.2 26.6 8v8.8c0 7.4-5.4 12.4-10.6 14.1C10.8 29.2 5.4 24.2 5.4 16.8V8Z"/>
+  <path fill="none" stroke="#F4F0E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+    d="M14.55 9.35c-2.7-1.2-5.55-.15-5.55 2.15 0 1.9 2.25 2.5 4.2 3.05 1.95.55 2.4 1.7 2.4 3.15 0 2.35-2.95 3.25-5.65 1.95"/>
+  <path fill="none" stroke="#F4F0E6" stroke-width="2.2" stroke-linecap="round"
+    d="M23.7 9.35c-3.15-1.25-6.35.4-6.35 4.85s3.2 6.1 6.35 4.85"/>
+  <path fill="none" stroke="#B8860B" stroke-width="1.45" stroke-linecap="round"
+    d="M12.35 22.55c0-2.05 1.65-3.4 3.65-3.4s3.65 1.35 3.65 3.4"/>
+</svg>

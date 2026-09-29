@@ -1,0 +1,148 @@
+import { C as require_jsx_runtime, b as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { d as todayISO, f as useSchool, n as Button, r as ClientReady, t as AppShell } from "./app-shell-bktvxgIj.mjs";
+import { t as StatusBadge } from "./status-badge-BMeD2YOM.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/parent-ERSWT5vL.js
+var import_jsx_runtime = require_jsx_runtime();
+function ParentPage() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AppShell, {
+		title: "Parent desk",
+		kicker: "Your child’s day",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClientReady, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ParentBody, {}) })
+	});
+}
+function ParentBody() {
+	const session = useSchool((s) => s.session);
+	const parents = useSchool((s) => s.parents);
+	const students = useSchool((s) => s.students);
+	const attendance = useSchool((s) => s.attendance);
+	const alerts = useSchool((s) => s.alerts);
+	const signOut = useSchool((s) => s.signOut);
+	if (session.role !== "parent") return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+		className: "text-muted",
+		children: [
+			"Sign in with the email the office gave you on the",
+			" ",
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+				to: "/",
+				className: "text-primary underline",
+				children: "home page"
+			}),
+			"."
+		]
+	});
+	const parent = parents.find((p) => p.id === session.parentId);
+	if (!parent) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+		className: "text-muted",
+		children: [
+			"This parent account is no longer on the roster.",
+			" ",
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+				className: "text-primary underline",
+				onClick: signOut,
+				children: "Sign out"
+			})
+		]
+	});
+	const kids = students.filter((s) => s.parentId === parent.id);
+	const day = todayISO();
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "grid gap-5",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex flex-wrap items-center justify-between gap-2",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+				className: "text-sm text-muted",
+				children: ["Signed in as ", parent.name]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+				variant: "ghost",
+				className: "min-h-10 text-xs",
+				onClick: signOut,
+				children: "Sign out"
+			})]
+		}), kids.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+			className: "rounded-3xl bg-paper p-5 text-sm text-muted shadow-border",
+			children: "No students are linked to this account yet. Ask the office to connect your child."
+		}) : kids.map((kid) => {
+			const today = attendance.filter((a) => a.studentId === kid.id && a.date === day);
+			const history = attendance.filter((a) => a.studentId === kid.id).slice(0, 12);
+			const notes = alerts.filter((a) => a.studentId === kid.id && a.parentId === parent.id).slice(0, 8);
+			return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+				className: "rounded-3xl bg-paper p-5 shadow-border",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-2xl font-semibold",
+						children: kid.name
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "text-sm text-muted",
+						children: [
+							"Grade ",
+							kid.grade,
+							" · ",
+							kid.section,
+							" · ",
+							kid.code
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						className: "mt-4 text-xs uppercase tracking-wider text-muted",
+						children: "Today"
+					}),
+					today.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm text-muted",
+						children: "No gate event yet today."
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+						className: "mt-2 grid gap-2",
+						children: today.map((e) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+							className: "flex flex-wrap items-center gap-2 text-sm",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatusBadge, { status: e.status }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "tabular-nums text-muted",
+								children: new Date(e.createdAt).toLocaleTimeString([], {
+									hour: "2-digit",
+									minute: "2-digit"
+								})
+							})]
+						}, e.id))
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						className: "mt-5 text-xs uppercase tracking-wider text-muted",
+						children: "Recent"
+					}),
+					history.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm text-muted",
+						children: "Nothing recorded yet."
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+						className: "mt-2 divide-y divide-line text-sm",
+						children: history.map((e) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+							className: "flex flex-wrap items-center justify-between gap-2 py-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "text-muted",
+								children: new Date(e.createdAt).toLocaleString([], {
+									month: "short",
+									day: "numeric",
+									hour: "2-digit",
+									minute: "2-digit"
+								})
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatusBadge, { status: e.status })]
+						}, e.id))
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						className: "mt-5 text-xs uppercase tracking-wider text-muted",
+						children: "Alerts"
+					}),
+					notes.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm text-muted",
+						children: "No alerts yet."
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+						className: "mt-2 grid gap-2",
+						children: notes.map((n) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+							className: "rounded-2xl bg-canvas px-3 py-3 text-sm",
+							children: n.text
+						}, n.id))
+					})
+				]
+			}, kid.id);
+		})]
+	});
+}
+//#endregion
+export { ParentPage as component };

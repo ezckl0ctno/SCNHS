@@ -1,0 +1,36 @@
+import { makeDefaultSections } from "./sections";
+import type { NotifySettings, SchoolState } from "./types";
+
+export const emptyNotify = (): NotifySettings => ({
+  emailUser: "",
+  emailPass: "",
+  emailHost: "smtp.gmail.com",
+  smsKey: "",
+  smsSender: "SCNGATE",
+});
+
+function seedUid() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `sec-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+export function seedState(): SchoolState {
+  return {
+    school: {
+      name: "Sta Catalina National High School",
+      campus: "Sta. Catalina",
+      arrivalStart: "07:30",
+      arrivalEnd: "08:10",
+      absentCutoff: "08:30",
+      dismissStart: "16:00",
+      notify: emptyNotify(),
+    },
+    officePasswordHash: null,
+    sections: makeDefaultSections(seedUid),
+    parents: [],
+    students: [],
+    attendance: [],
+    alerts: [],
+    session: { role: "none" },
+  };
+}

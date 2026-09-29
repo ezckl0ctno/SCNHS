@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Sta Catalina Gate",
+      "hasCanvas": false,
+      "bodyTextLen": 165,
+      "bodyTextHash": "397496d572f4d5f4ecf2af643e964c9cec5eab95c467b04cea3461fc4a7c1b09",
+      "bodyTextPrefix": "SC Sta Catalina NHS Gate attendance Home Gate Office Student Par",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Sta Catalina Gate",
+      "hasCanvas": false,
+      "bodyTextLen": 1213,
+      "bodyTextHash": "57885e99bcc447d0d0ac9408175ba5f01734d917f98ea0f85af599c1cb91b13c",
+      "bodyTextPrefix": "SC Sta Catalina NHS Gate attendance STA CATALINA NATIONAL HIGH S",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

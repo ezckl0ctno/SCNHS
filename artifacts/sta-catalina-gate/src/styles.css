@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #efe8d8;
+  --color-paper: #fffaf1;
+  --color-ink: #1a2e24;
+  --color-muted: #5c6b63;
+  --color-line: #d9d0c0;
+  --color-primary: #1b5e46;
+  --color-primary-dark: #134536;
+  --color-primary-fg: #f6f3ea;
+  --color-leaf: #dce8e1;
+  --color-gold: #c9a227;
+  --color-gold-dark: #7a5c0a;
+  --color-gold-soft: #f4e7bc;
+  --color-ok: #146c43;
+  --color-ok-soft: #d9f0e4;
+  --color-rose: #9f2d3a;
+  --color-rose-soft: #f8dfe2;
+  --font-sans: "Figtree", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --shadow-border: 0px 0px 0px 1px rgba(26, 46, 36, 0.08),
+    0px 1px 2px -1px rgba(26, 46, 36, 0.08), 0px 8px 24px -12px rgba(26, 46, 36, 0.16);
+  --shadow-border-hover: 0px 0px 0px 1px rgba(26, 46, 36, 0.12),
+    0px 1px 2px -1px rgba(26, 46, 36, 0.1), 0px 12px 28px -12px rgba(26, 46, 36, 0.2);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  input,
+  select {
+    font: inherit;
+  }
+}
