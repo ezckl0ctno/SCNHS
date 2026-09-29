@@ -21,40 +21,6 @@ export function studentsInSection(students: Student[], sectionId: string) {
   return students.filter((s) => s.sectionId === sectionId);
 }
 
-export const DEFAULT_SECTION_PLAN: Array<{ grade: string; name: string }> = [
-  { grade: "7", name: "Rizal" },
-  { grade: "7", name: "Bonifacio" },
-  { grade: "7", name: "Mabini" },
-  { grade: "7", name: "Luna" },
-  { grade: "8", name: "Rizal" },
-  { grade: "8", name: "Bonifacio" },
-  { grade: "8", name: "Mabini" },
-  { grade: "8", name: "Luna" },
-  { grade: "9", name: "Rizal" },
-  { grade: "9", name: "Bonifacio" },
-  { grade: "9", name: "Mabini" },
-  { grade: "9", name: "Luna" },
-  { grade: "10", name: "Rizal" },
-  { grade: "10", name: "Bonifacio" },
-  { grade: "10", name: "Mabini" },
-  { grade: "10", name: "Luna" },
-  { grade: "11", name: "STEM" },
-  { grade: "11", name: "ABM" },
-  { grade: "11", name: "HUMSS" },
-  { grade: "12", name: "STEM" },
-  { grade: "12", name: "ABM" },
-  { grade: "12", name: "HUMSS" },
-];
-
-export function makeDefaultSections(uid: () => string): SchoolSection[] {
-  return DEFAULT_SECTION_PLAN.map((row) => ({
-    id: uid(),
-    grade: row.grade,
-    name: row.name,
-    adviser: "",
-  }));
-}
-
 export function sortSections(sections: SchoolSection[]) {
   return [...sections].sort((a, b) => {
     const ga = Number(a.grade);

@@ -79,12 +79,6 @@ function hydrateSections(
       map.set(key, { id: uid(), grade, name, adviser: "" });
     }
   }
-  const base = seedState().sections;
-  if (map.size === 0) return base;
-  for (const s of base) {
-    const key = sectionKey(s.grade, s.name);
-    if (!map.has(key)) map.set(key, s);
-  }
   return sortSections([...map.values()]);
 }
 
@@ -151,7 +145,6 @@ type Actions = {
     direction: Exclude<Direction, "none">,
   ) => { ok: true; student: Student; event: AttendanceEvent } | { ok: false; error: string };
   checkFace: (
-    sectionId: string,
     descriptor: number[],
     direction: Exclude<Direction, "none">,
   ) => { ok: true; student: Student; event: AttendanceEvent } | { ok: false; error: string };
@@ -312,16 +305,13 @@ export const useSchool = create<SchoolState & Actions>()(
         return { ok: true, student, event: recorded.event };
       },
 
-      checkFace: (sectionId, descriptor, direction) => {
+      checkFace: (descriptor, direction) => {
         const state = get();
-        const section = state.sections.find((s) => s.id === sectionId);
-        if (!section) return { ok: false, error: "Choose the student’s section first." };
-        const cohort = state.students.filter((s) => s.sectionId === section.id);
-        const hit = matchFace(cohort, descriptor);
+        const hit = matchFace(state.students, descriptor);
         if (!hit) {
           return {
             ok: false,
-            error: `No matching enrolled face in Grade ${section.grade} — ${section.name}. Try PIN, or pick the correct section.`,
+            error: "No enrolled face matched. Ask the office to enroll the student’s face, then try again.",
           };
         }
         const when = new Date();

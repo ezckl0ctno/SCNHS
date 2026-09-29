@@ -1,4 +1,3 @@
-import { makeDefaultSections } from "./sections";
 import type { NotifySettings, SchoolState } from "./types";
 
 export const emptyNotify = (): NotifySettings => ({
@@ -8,11 +7,6 @@ export const emptyNotify = (): NotifySettings => ({
   smsKey: "",
   smsSender: "SCNGATE",
 });
-
-function seedUid() {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
-  return `sec-${Math.random().toString(36).slice(2, 10)}`;
-}
 
 export function seedState(): SchoolState {
   return {
@@ -26,7 +20,7 @@ export function seedState(): SchoolState {
       notify: emptyNotify(),
     },
     officePasswordHash: null,
-    sections: makeDefaultSections(seedUid),
+    sections: [],
     parents: [],
     students: [],
     attendance: [],
